@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookShare</title>
+    <link rel="stylesheet" href="./css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ballet:opsz@16..72&family=Elms+Sans:ital,wght@0,100..900;1,100..900&family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&family=Monsieur+La+Doulaise&family=Rubik+Glitch&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <section class="body">
+        <header>
+            <div class="logo">
+                <img src="./assets/book.png" alt="logo"><span>BookShare</span>
+            </div>
+            <ul class="menu">
+                <li class="menu-item active" data-screen="home">Início</li>
+                <li class="menu-item" data-screen="catalogo">Catálogo</li>
+                <li class="menu-item" data-screen="emprestimos">Empréstimos</li>
+                <li class="menu-item" data-screen="cadastrar">Cadastrar</li>
+                <li class="menu-item" data-screen="pessoas">Pessoas</li>
+            </ul>
+        </header>
+
+        <main class="app-content">
+            <section id="screen-home" class="screen active">
+                <section class="apresentacao" id="entrarCatalogo">
+                    <div class="text1">
+                        <h1>Encontre seu próximo livro <span>AQUI</span></h1>
+                        <p>Pesquise, reserve e acompanhe emprestimos em uma biblioteca digital moderna</p>
+                        <div class="hero-actions">
+                            <button class="primary-button js-go-catalogo">Explorar catálogo</button>
+                            <button class="secondary-button js-go-cadastrar">Cadastrar livro</button>
+                        </div>
+                    </div>
+                    <div class="image-wrap">
+                        <img src="./assets/istockphoto-2162169941-1024x1024.jpg" alt="img2">
+                    </div>
+                </section>
+            </section>
+
+            <section id="screen-catalogo" class="screen">
+                <section class="section-toolbar">
+                    <div class="section-heading">
+                        <span class="section-kicker">Catálogo</span>
+                        <h2>Biblioteca digital</h2>
+                    </div>
+                    <div class="search-wrap">
+                        <input type="search" id="searchInput" placeholder="Buscar por título, autor ou categoria">
+                    </div>
+                </section>
+                <section class="catalogo"></section>
+            </section>
+
+            <section id="screen-emprestimos" class="screen">
+                <section class="section-toolbar">
+                    <div class="section-heading">
+                        <span class="section-kicker">Empréstimos</span>
+                        <h2>Controle de empréstimos</h2>
+                    </div>
+                </section>
+                <section class="loans-panel">
+                    <section class="register-panel">
+                        <form id="cadastroEmprestimo" class="cadastro-form">
+                            <div class="form-row">
+                                <label for="livroEmprestimo">Livro</label>
+                                <select id="livroEmprestimo" required></select>
+                            </div>
+                            <div class="form-row">
+                                <label for="pessoaEmprestimo">Pessoa</label>
+                                <select id="pessoaEmprestimo" required></select>
+                            </div>
+                            <div class="form-row">
+                                <label for="dataSaidaEmprestimo">Data saída</label>
+                                <input type="date" id="dataSaidaEmprestimo" required>
+                            </div>
+                            <div class="form-row">
+                                <label for="dataDevolucaoEmprestimo">Data devolução</label>
+                                <input type="date" id="dataDevolucaoEmprestimo">
+                            </div>
+                            <div class="form-row">
+                                <label for="statusEmprestimo">Status</label>
+                                <select id="statusEmprestimo">
+                                    <option value="Ativo">Ativo</option>
+                                    <option value="Devolvido">Devolvido</option>
+                                    <option value="Atrasado">Atrasado</option>
+                                </select>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="primary-button">Salvar empréstimo</button>
+                                <span id="loan-form-message" class="form-message"></span>
+                            </div>
+                        </form>
+                    </section>
+                    <div class="table-wrap">
+                        <table class="loan-table">
+                            <thead>
+                                <tr>
+                                    <th>Livro</th>
+                                    <th>Leitor</th>
+                                    <th>Data saída</th>
+                                    <th>Data devolução</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="loanTableBody"></tbody>
+                        </table>
+                    </div>
+                </section>
+            </section>
+
+            <section id="screen-cadastrar" class="screen">
+                <section class="section-toolbar">
+                    <div class="section-heading">
+                        <span class="section-kicker">Cadastrar</span>
+                        <h2>Novo livro</h2>
+                    </div>
+                </section>
+                <section class="register-panel">
+                    <form id="cadastroLivros" class="cadastro-form">
+                        <div class="form-row">
+                            <label for="tituloLivro">Título</label>
+                            <input type="text" id="tituloLivro" required>
+                        </div>
+                        <div class="form-row">
+                            <label for="autorLivro">Autor</label>
+                            <input type="text" id="autorLivro" required>
+                        </div>
+                        <div class="form-row">
+                            <label for="categoriaLivro">Categoria</label>
+                            <input type="text" id="categoriaLivro" required>
+                        </div>
+                        <div class="form-row">
+                            <label for="fotoLivro">URL da foto</label>
+                            <input type="url" id="fotoLivro" placeholder="https://...">
+                        </div>
+                        <div class="form-row">
+                            <label for="quantidadeLivro">Quantidade</label>
+                            <input type="number" id="quantidadeLivro" min="1" value="1" required>
+                        </div>
+                        <div class="form-row">
+                            <label for="disponivelLivro">Disponível</label>
+                            <input type="number" id="disponivelLivro" min="0" value="1" required>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="primary-button">Salvar livro</button>
+                            <span id="form-message" class="form-message"></span>
+                        </div>
+                    </form>
+                </section>
+            </section>
+
+            <section id="screen-pessoas" class="screen">
+                <section class="section-toolbar">
+                    <div class="section-heading">
+                        <span class="section-kicker">Pessoas</span>
+                        <h2>Novo cadastro de pessoa</h2>
+                    </div>
+                </section>
+                <section class="register-panel">
+                    <form id="cadastroPessoas" class="cadastro-form">
+                        <div class="form-row">
+                            <label for="nomePessoa">Nome completo</label>
+                            <input type="text" id="nomePessoa" required>
+                        </div>
+                        <div class="form-row">
+                            <label for="emailPessoa">E-mail</label>
+                            <input type="email" id="emailPessoa" required>
+                        </div>
+                        <div class="form-row">
+                            <label for="telefonePessoa">Telefone</label>
+                            <input type="tel" id="telefonePessoa" required>
+                        </div>
+                        <div class="form-row">
+                            <label for="tipoPessoa">Tipo</label>
+                            <select id="tipoPessoa" required>
+                                <option value="Leitor">Leitor</option>
+                                <option value="Funcionário">Funcionário</option>
+                                <option value="Voluntário">Voluntário</option>
+                            </select>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="primary-button">Salvar pessoa</button>
+                            <span id="pessoa-form-message" class="form-message"></span>
+                        </div>
+                    </form>
+                </section>
+            </section>
+        </main>
+    </section>
+
+    <footer>
+        <div class="logo">
+            <img src="./assets/book.png" alt="logo"><span>BookShare</span>
+        </div>
+        <span>
+            <span>100%</span>
+            <span>Satisfação dos leitores</span>
+        </span>
+    </footer>
+
+    <script src="./js/main.js"></script>
+</body>
+</html>
