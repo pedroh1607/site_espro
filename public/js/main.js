@@ -13,6 +13,17 @@ const loanFormMessage = document.getElementById("loan-form-message");
 let livros = [];
 let usuarios = [];
 let emprestimos = [];
+const storageKey = "bookshare-database";
+
+function saveData() {
+    localStorage.setItem(storageKey, JSON.stringify({ livros, usuarios, emprestimos }));
+}
+
+function renderData() {
+    renderLivros(livros);
+    renderEmprestimos(emprestimos);
+    renderLoanOptions();
+}
 
 function normalizeText(value) {
     return String(value ?? "").toLowerCase().trim();
@@ -129,6 +140,7 @@ function initCadastro() {
             Disponivel: disponivel
         });
 
+        saveData();
         form.reset();
         renderLivros(livros);
         formMessage.textContent = "Livro cadastrado com sucesso.";
@@ -161,6 +173,7 @@ function initCadastroPessoas() {
             Status: "Ativo"
         });
 
+        saveData();
         pessoaForm.reset();
         pessoaFormMessage.textContent = "Pessoa cadastrada com sucesso.";
         renderLoanOptions();
@@ -210,6 +223,7 @@ function initCadastroEmprestimo() {
             Status: status
         });
 
+        saveData();
         loanForm.reset();
         renderEmprestimos(emprestimos);
         loanFormMessage.textContent = "Empréstimo cadastrado com sucesso.";
@@ -218,7 +232,22 @@ function initCadastroEmprestimo() {
 }
 
 function loadDataFromJson() {
-    fetch("/json/banco_de_dados.json")
+    const savedData = localStorage.getItem(storageKey);
+    if (savedData) {
+        try {
+            const data = JSON.parse(savedData);
+            livros = Array.isArray(data.livros) ? data.livros : [];
+            usuarios = Array.isArray(data.usuarios) ? data.usuarios : [];
+            emprestimos = Array.isArray(data.emprestimos) ? data.emprestimos : [];
+            renderData();
+            return;
+        } catch (error) {
+            localStorage.removeItem(storageKey);
+            console.warn("Dados locais inválidos; carregando o XLSX convertido.", error);
+        }
+    }
+
+    fetch("./json/banco_de_dados.json")
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP ${response.status}`);
@@ -230,9 +259,8 @@ function loadDataFromJson() {
             usuarios = data.usuarios || [];
             emprestimos = data.emprestimos || [];
 
-            renderLivros(livros);
-            renderEmprestimos(emprestimos);
-            renderLoanOptions();
+            renderData();
+            saveData();
         })
         .catch(error => {
             console.error(error);

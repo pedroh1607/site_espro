@@ -3,8 +3,9 @@ from pathlib import Path
 
 from openpyxl import load_workbook
 
-wb_path = Path('json/banco_de_dados.xlsx')
-json_path = Path('json/banco_de_dados.json')
+project_dir = Path(__file__).resolve().parent
+wb_path = project_dir / 'json' / 'banco_de_dados.xlsx'
+json_path = project_dir / 'public' / 'json' / 'banco_de_dados.json'
 
 if not wb_path.exists():
     raise FileNotFoundError(f'Workbook not found: {wb_path}')
@@ -23,5 +24,6 @@ for sheet in wb.worksheets:
         rows.append(item)
     records[sheet.title] = rows
 
+json_path.parent.mkdir(parents=True, exist_ok=True)
 json_path.write_text(json.dumps(records, ensure_ascii=False, indent=2), encoding='utf-8')
 print(f'created {json_path} with sheets: {list(records.keys())}')
