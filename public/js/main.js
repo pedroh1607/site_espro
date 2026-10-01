@@ -231,7 +231,47 @@ function initCadastroEmprestimo() {
     });
 }
 
-function loadDataFromJson() {
+function normalizeWorkbookData(workbook) {
+    const normalized = { livros: [], usuarios: [], emprestimos: [] };
+
+    workbook.SheetNames.forEach(sheetName => {
+        const rows = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { defval: "" });
+        const key = String(sheetName).trim().toLowerCase();
+
+        if (key.includes("livro")) {
+            normalized.livros = rows;
+        } else if (key.includes("usuario")) {
+            normalized.usuarios = rows;
+        } else if (key.includes("emprest")) {
+            normalized.emprestimos = rows;
+        }
+    });
+
+    return normalized;
+}
+
+async function loadDataFromXlsx() {
+    try {
+        const response = await fetch("./json/banco_de_dados.xlsx");
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+
+        const arrayBuffer = await response.arrayBuffer();
+        const workbook = XLSX.read(arrayBuffer, { type: "array" });
+        const data = normalizeWorkbookData(workbook);
+
+        livros = data.livros || [];
+        usuarios = data.usuarios || [];
+        emprestimos = data.emprestimos || [];
+
+        renderData();
+        saveData();
+        return;
+    } catch (error) {
+        console.warn("Não foi possível carregar o XLSX diretamente; tentando dados locais e JSON.", error);
+    }
+
     const savedData = localStorage.getItem(storageKey);
     if (savedData) {
         try {
@@ -243,10 +283,14 @@ function loadDataFromJson() {
             return;
         } catch (error) {
             localStorage.removeItem(storageKey);
-            console.warn("Dados locais inválidos; carregando o XLSX convertido.", error);
+            console.warn("Dados locais inválidos; carregando o backup em JSON.", error);
         }
     }
 
+    loadDataFromJson();
+}
+
+function loadDataFromJson() {
     fetch("./json/banco_de_dados.json")
         .then(response => {
             if (!response.ok) {
@@ -273,5 +317,5 @@ initSearch();
 initCadastro();
 initCadastroPessoas();
 initCadastroEmprestimo();
-loadDataFromJson();
+loadDataFromXlsx();
 
