@@ -63,12 +63,12 @@ function renderEmprestimos(data) {
 
     data.forEach(item => {
         const row = document.createElement("tr");
-        const livro = livros.find(l => String(l.Id) === String(item.LivroId)) || { Titulo: "Livro" };
-        const usuario = usuarios.find(u => String(u.Id) === String(item.UsuarioId)) || { Nome: "Leitor" };
+        const livro = livros.find(l => String(l.Id) === String(item.LivroId)) || { Titulo: "Livro não encontrado" };
+        const usuario = usuarios.find(u => String(u.Id) === String(item.UsuarioId)) || { Nome: "Pessoa não cadastrada" };
 
         row.innerHTML = `
             <td>${livro.Titulo}</td>
-            <td>${usuario.Nome}</td>
+            <td>${usuario.Nome || "Pessoa não cadastrada"}</td>
             <td>${item.DataSaida || "-"}</td>
             <td>${item.DataDevolucao || "-"}</td>
             <td><span class="loan-status">${item.Status || "Ativo"}</span></td>
@@ -186,15 +186,31 @@ function renderLoanOptions() {
     const pessoaSelect = document.getElementById("pessoaEmprestimo");
 
     if (livroSelect) {
-        livroSelect.innerHTML = livros
-            .map(livro => `<option value="${livro.Id ?? ''}">${livro.Titulo ?? 'Livro'}</option>`)
-            .join('');
+        const livrosValidos = livros.filter(livro => livro && (livro.Titulo || livro.Id));
+
+        if (!livrosValidos.length) {
+            livroSelect.innerHTML = '<option value="">Cadastre um livro primeiro</option>';
+            livroSelect.disabled = true;
+        } else {
+            livroSelect.disabled = false;
+            livroSelect.innerHTML = livrosValidos
+                .map(livro => `<option value="${livro.Id ?? ''}">${livro.Titulo || 'Livro'}</option>`)
+                .join('');
+        }
     }
 
     if (pessoaSelect) {
-        pessoaSelect.innerHTML = usuarios
-            .map(usuario => `<option value="${usuario.Id ?? ''}">${usuario.Nome ?? 'Pessoa'}</option>`)
-            .join('');
+        const usuariosValidos = usuarios.filter(usuario => usuario && (usuario.Nome || usuario.Email || usuario.Id));
+
+        if (!usuariosValidos.length) {
+            pessoaSelect.innerHTML = '<option value="">Cadastre uma pessoa primeiro</option>';
+            pessoaSelect.disabled = true;
+        } else {
+            pessoaSelect.disabled = false;
+            pessoaSelect.innerHTML = usuariosValidos
+                .map(usuario => `<option value="${usuario.Id ?? ''}">${usuario.Nome || 'Pessoa'}</option>`)
+                .join('');
+        }
     }
 }
 
